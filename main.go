@@ -23,7 +23,10 @@ func main() {
 			continue
 		}
 		userDataTotal := stringNumbersInInt(userData)
-		result := calculationData(choiceUserOperation, userDataTotal)
+		result, err := calculationData(choiceUserOperation, userDataTotal)
+		if err != nil {
+			break
+		}
 		fmt.Printf("Result: %v\n", result)
 		repeatCalculation := repeatCalculation()
 		if !repeatCalculation {
@@ -71,7 +74,10 @@ func stringNumbersInInt(userData string) []int {
 	return userDataInt
 }
 
-func calculationData(userChoice string, userDataInt []int) int {
+func calculationData(userChoice string, userDataInt []int) (int, error) {
+	if len(userDataInt) <= 0 {
+		return 0, errors.New("Err")
+	}
 	var resultCalculation int
 	switch {
 	case userChoice == "AVG":
@@ -88,14 +94,14 @@ func calculationData(userChoice string, userDataInt []int) int {
 		sort.Ints(userDataInt)
 		l := len(userDataInt)
 		if l == 0 {
-			return 0
+			return 0, nil
 		} else if l%2 == 0 {
 			resultCalculation = (userDataInt[l/2-1] + userDataInt[l/2]) / 2
 		} else {
 			resultCalculation = userDataInt[l/2]
 		}
 	}
-	return resultCalculation
+	return resultCalculation, nil
 }
 
 func repeatCalculation() bool {
